@@ -7,4 +7,5 @@ class AppColors {
 
   static Color textColor1 = HexColor("#25315B");
   static Color textColor2 = HexColor("#838EAB");
+  static Color textColor3 = HexColor("#74B71B");
 }

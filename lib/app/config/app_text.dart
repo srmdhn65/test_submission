@@ -32,7 +32,7 @@ class AppText extends StatelessWidget {
       style: TextStyle(
         fontSize: fontSize ?? 14,
         fontWeight: fontWeight ?? FontWeight.normal,
-        fontFamily: fontFamily ?? FontTexts.fontFamily,
+        fontFamily: fontFamily ?? FontTexts.fontRaleway,
         color: color ?? AppColors.textColor1,
       ),
       maxLines: maxLines,

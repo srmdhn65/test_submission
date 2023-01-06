@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tech_test/app/config/app_colors.dart';
 import 'package:flutter_tech_test/app/config/app_text.dart';
+import 'package:flutter_tech_test/app/extensiens/font_text.dart';
 
 import 'package:get/get.dart';
 
@@ -29,6 +30,67 @@ class ProductListView extends GetView<ProductListController> {
                     border: Border.all(color: AppColors.lightGrey)),
                 child: Stack(
                   children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Image.asset('assets/images/img_produk_2@2x.png'),
+                          AppText(
+                            message: "Samsung Galaxy S9",
+                            fontSize: 12,
+                            fontFamily: FontTexts.fontRaleway,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Row(
+                            children: [
+                              AppText(
+                                message: "12.000.000",
+                                fontSize: 12,
+                                color: AppColors.textColor3,
+                                fontFamily: FontTexts.fontRaleway,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  AppText(
+                                    message: "120 Review",
+                                    fontSize: 12,
+                                    color: AppColors.textColor2,
+                                    fontFamily: FontTexts.fontRaleway,
+                                  ),
+                                ],
+                              ),
+                              Image.asset(
+                                'assets/images/ic_wishlist_click.png',
+                                height: 25,
+                                width: 25,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                     Align(
                         alignment: Alignment.topRight,
                         child: Image.asset(
@@ -36,19 +98,6 @@ class ProductListView extends GetView<ProductListController> {
                           height: 45,
                           width: 45,
                         )),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Image.asset('assets/images/img_produk_2@2x.png'),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(
-                          message: "Samsung Galaxy S9",
-                          fontSize: 12,
-                        )
-                      ],
-                    ),
                   ],
                 ),
               );
