@@ -8,6 +8,7 @@ class AppText extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
   final String? fontFamily;
+  final FontStyle? fontStyle;
   final Color? color;
   final int? maxLines;
   final TextOverflow? overflow;
@@ -19,6 +20,7 @@ class AppText extends StatelessWidget {
       this.fontSize,
       this.fontWeight,
       this.fontFamily,
+      this.fontStyle,
       this.color,
       this.maxLines,
       this.overflow,
@@ -30,11 +32,11 @@ class AppText extends StatelessWidget {
     return Text(
       message,
       style: TextStyle(
-        fontSize: fontSize ?? 14,
-        fontWeight: fontWeight ?? FontWeight.normal,
-        fontFamily: fontFamily ?? FontTexts.fontRaleway,
-        color: color ?? AppColors.textColor1,
-      ),
+          fontSize: fontSize ?? 14,
+          fontWeight: fontWeight ?? FontWeight.normal,
+          fontFamily: fontFamily ?? FontTexts.fontRaleway,
+          color: color ?? AppColors.textColor1,
+          fontStyle: fontStyle ?? FontStyle.normal),
       maxLines: maxLines,
       overflow: overflow ?? TextOverflow.visible,
       textAlign: textAlign ?? TextAlign.left,
