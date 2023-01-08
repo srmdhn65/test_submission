@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_tech_test/app/config/base_url.dart';
 import 'package:flutter_tech_test/data/model/product_response.dart';
 import 'package:http/http.dart' show Client;
@@ -24,7 +26,16 @@ class ProductRepository {
     final response = await _http.get(url, headers: {
       "Content-Type": "application/json",
     });
-    print(response.body);
     return productDetailReponseFromJson(response.body);
+  }
+
+  Future<Map<String, dynamic>> addWishlist({id = 0}) async {
+    var url = Uri.parse(
+        "${AppConfig.baseUrl}${AppConfig.wishlist.replaceAll('{id}', id)}");
+
+    final response = await _http.post(url);
+    var res = jsonDecode(response.body);
+    res['status_code'] = response.statusCode;
+    return res;
   }
 }

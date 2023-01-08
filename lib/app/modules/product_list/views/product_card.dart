@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_tech_test/app/modules/product_list/controllers/product_list_controller.dart';
 import 'package:flutter_tech_test/app/routes/app_pages.dart';
 import 'package:flutter_tech_test/data/model/product_response.dart';
 import 'package:get/get.dart';
@@ -129,17 +130,24 @@ class ProductCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      products.isWishlist == 1
-                          ? Image.asset(
-                              'assets/images/ic_wishlist_click.png',
-                              height: 25,
-                              width: 25,
-                            )
-                          : Image.asset(
-                              'assets/images/ic_wishlist.png',
-                              height: 25,
-                              width: 25,
-                            )
+                      InkWell(
+                        onTap: () {
+                          var controller = Get.find<ProductListController>();
+                          controller.idProduct(products.id.toString());
+                          controller.onWishlist;
+                        },
+                        child: products.isWishlist == 1
+                            ? Image.asset(
+                                'assets/images/ic_wishlist_click.png',
+                                height: 25,
+                                width: 25,
+                              )
+                            : Image.asset(
+                                'assets/images/ic_wishlist.png',
+                                height: 25,
+                                width: 25,
+                              ),
+                      )
                     ],
                   )
                 ],

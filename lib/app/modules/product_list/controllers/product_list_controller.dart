@@ -3,6 +3,7 @@ import 'package:flutter_tech_test/data/model/product_response.dart';
 import 'package:flutter_tech_test/data/repository/product_repository.dart';
 import 'package:get/get.dart';
 
+import '../../../config/app_colors.dart';
 import '../../../extensiens/pagination.dart';
 
 class ProductListController extends GetxController {
@@ -13,6 +14,7 @@ class ProductListController extends GetxController {
   final _scrollcontroller = ScrollController();
   final _isLoading = true.obs;
   final _shoLoading = false.obs;
+  var idProduct = ''.obs;
 
   List<Products> get product => _products.toList();
   int get limit => _paginationFilter.value.limit;
@@ -20,6 +22,8 @@ class ProductListController extends GetxController {
   bool get lastPage => _lastPage.value;
   bool get isLoading => _isLoading.value;
   bool get showLoading => _shoLoading.value;
+  get onRefresh => _refreshList();
+  get onWishlist => _onWishlist();
 
   ScrollController get scrollController => _scrollcontroller;
   @override
@@ -54,22 +58,30 @@ class ProductListController extends GetxController {
       _isLoading.value = false;
       _shoLoading.value = false;
     } catch (e) {
-      print(e);
       _isLoading.value = false;
       _shoLoading.value = false;
     }
   }
 
   // TODO method : do refresh data list product
-  Future<void> refreshList() async {
-    print('object');
+  Future<void> _refreshList() async {
     _isLoading.value = true;
     _products.clear();
     _changePaginationFilter(1, 4);
   }
 
   // TODO method : do add/remove wishlist item
-  void _onWishlist() {}
+  void _onWishlist() async {
+    var res = await _productRepository.addWishlist(id: idProduct.value);
+    if (res['status_code'] != 200) {
+      Get.snackbar("Warning", "Pemesan Melebihi Stock",
+          backgroundColor: Colors.orange, colorText: AppColors.primaryColor);
+      return;
+    }
+    Get.snackbar("Success", "Add To Wishlist",
+        backgroundColor: AppColors.textColor3,
+        colorText: AppColors.primaryColor);
+  }
 
   // TODO method : move to product detail screen
   void _toProductDetail() {}

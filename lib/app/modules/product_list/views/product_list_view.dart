@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../controllers/product_list_controller.dart';
+import 'loading_product.dart';
 
 class ProductListView extends GetView<ProductListController> {
   @override
@@ -15,11 +16,22 @@ class ProductListView extends GetView<ProductListController> {
       backgroundColor: AppColors.primaryColor,
       body: SafeArea(
         child: Obx(() => controller.isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
+            ? GridView.builder(
+                shrinkWrap: true,
+                itemCount: 6,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 23),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.7,
+                    mainAxisSpacing: 23,
+                    crossAxisSpacing: 23,
+                    mainAxisExtent: 250),
+                itemBuilder: (BuildContext context, int index) {
+                  return const LoadingCard();
+                })
             : RefreshIndicator(
-                onRefresh: controller.refreshList,
+                onRefresh: () => controller.onRefresh,
                 child: LazyLoadScrollView(
                     onEndOfPage: controller.loadNextPage,
                     isLoading: controller.lastPage,
@@ -28,6 +40,7 @@ class ProductListView extends GetView<ProductListController> {
                         Expanded(
                           child: GridView.builder(
                               shrinkWrap: true,
+                              physics: AlwaysScrollableScrollPhysics(),
                               itemCount: controller.product.length,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 30, vertical: 23),

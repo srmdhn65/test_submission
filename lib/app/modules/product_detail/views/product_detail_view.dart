@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_tech_test/app/config/app_colors.dart';
 import 'package:flutter_tech_test/app/config/app_text.dart';
+import 'package:flutter_tech_test/app/modules/product_detail/views/loading_detail.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/product_detail_controller.dart';
+import 'expanded_text.dart';
 
 class ProductDetailView extends GetView<ProductDetailController> {
   @override
@@ -24,7 +27,6 @@ class ProductDetailView extends GetView<ProductDetailController> {
         title: const AppText(
           message: 'Gift Detail',
           fontSize: 20,
-          fontWeight: FontWeight.bold,
         ),
         backgroundColor: AppColors.primaryColor,
         elevation: 0,
@@ -32,9 +34,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
       ),
       body: Obx(
         () => controller.isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
+            ? const LoadingDetail()
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
                             height: 10,
                           ),
                           Html(
-                            data: controller.productDetail.description,
+                            data: controller.productDetail.info,
                             style: {'p': Style(textAlign: TextAlign.justify)},
                           ),
                           const SizedBox(
@@ -117,27 +117,8 @@ class ProductDetailView extends GetView<ProductDetailController> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Container(
-                              height: controller.expandedInfo
-                                  ? Get.height * 0.12
-                                  : Get.height * 0.04,
-                              child: Html(
-                                data: controller.productDetail.info,
-                                style: {
-                                  'p': Style(textAlign: TextAlign.justify)
-                                },
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                controller.expandedText();
-                              },
-                              child: AppText(
-                                message: "Lihat Semua",
-                                color: AppColors.textColor3,
-                              ))
+                          ExpandableText(
+                              controller.productDetail.description ?? ""),
                         ],
                       ),
                     ),
@@ -152,28 +133,52 @@ class ProductDetailView extends GetView<ProductDetailController> {
                               width: Get.width,
                               decoration: BoxDecoration(
                                   color: AppColors.lightGrey.withOpacity(0.40),
-                                  borderRadius: BorderRadius.circular(50)),
+                                  borderRadius: BorderRadius.circular(30)),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
-                                    child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.remove)),
+                                    flex: 3,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: IconButton(
+                                          onPressed: () =>
+                                              controller.detrackQuantity,
+                                          icon: const Icon(Icons.remove)),
+                                    ),
                                   ),
                                   Flexible(
+                                      flex: 4,
                                       child: Container(
                                           color: AppColors.primaryColor,
-                                          child: const TextField(
+                                          child: TextField(
+                                            controller:
+                                                controller.quantityController,
                                             textAlign: TextAlign.center,
-                                            decoration: InputDecoration(
+                                            keyboardType: TextInputType.number,
+                                            onChanged: (value) {
+                                              if (value.isEmpty) {
+                                                controller.quantityController
+                                                    .text = '0';
+                                              }
+                                            },
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly
+                                            ],
+                                            decoration: const InputDecoration(
                                                 border: InputBorder.none),
                                           ))),
                                   Flexible(
-                                    child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.add)),
+                                    flex: 3,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: IconButton(
+                                          onPressed: () =>
+                                              controller.addQuantity,
+                                          icon: const Icon(Icons.add)),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -185,34 +190,49 @@ class ProductDetailView extends GetView<ProductDetailController> {
                           Expanded(
                             flex: 2,
                             child: Container(
-                              height: 42.92,
-                              width: Get.width,
-                              decoration: BoxDecoration(
-                                  color: AppColors.lightGrey.withOpacity(0.40),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                    child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.remove)),
-                                  ),
-                                  Flexible(
-                                      child: Container(
-                                          color: AppColors.primaryColor,
-                                          child: TextField())),
-                                  Flexible(
-                                    child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.add)),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                height: 42.92,
+                                width: Get.width,
+                                decoration: BoxDecoration(
+                                    color:
+                                        AppColors.lightGrey.withOpacity(0.40),
+                                    borderRadius: BorderRadius.circular(40),
+                                    border: Border.all(
+                                        color: AppColors.textColor3)),
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        backgroundColor: AppColors.primaryColor,
+                                        elevation: 0),
+                                    onPressed: () => controller.addToCart,
+                                    child: AppText(
+                                      message: "Add To Cart",
+                                      fontSize: 14,
+                                      color: AppColors.textColor3,
+                                    ))),
                           )
                         ],
                       ),
-                    )
+                    ),
+                    Container(
+                        margin: const EdgeInsets.all(27),
+                        height: 42.92,
+                        width: Get.width,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    side:
+                                        BorderSide(color: AppColors.textColor3),
+                                    borderRadius: BorderRadius.circular(40)),
+                                backgroundColor: AppColors.textColor3,
+                                elevation: 0),
+                            onPressed: () => controller.redeemProduct,
+                            child: AppText(
+                              message: "Redeem",
+                              fontSize: 14,
+                              color: AppColors.primaryColor,
+                            ))),
                   ],
                 ),
               ),
@@ -247,7 +267,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
               direction: Axis.horizontal,
               allowHalfRating: true,
               itemCount: 5,
-              itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+              itemPadding: const EdgeInsets.symmetric(horizontal: 2.0),
               onRatingUpdate: (rating) {
                 print(rating);
               },
@@ -300,34 +320,39 @@ class ProductDetailView extends GetView<ProductDetailController> {
           color: AppColors.lightGrey,
           height: 64,
         ),
-        Column(
-          children: [
-            controller.productDetail.isWishlist == 1
-                ? Image.asset(
-                    'assets/images/ic_wishlist_click.png',
-                    height: 25,
-                    width: 25,
-                  )
-                : Image.asset(
-                    'assets/images/ic_wishlist.png',
-                    height: 25,
-                    width: 25,
-                  ),
-            const SizedBox(
-              height: 5,
-            ),
-            AppText(
-              message: "Add to",
-              fontSize: 12,
-              color: AppColors.textColor2,
-            ),
-            AppText(
-              message: "Wishlist",
-              fontSize: 12,
-              color: AppColors.textColor2,
-            )
-          ],
-        ),
+        GetBuilder<ProductDetailController>(builder: (detailController) {
+          return Column(
+            children: [
+              InkWell(
+                onTap: () => controller.addToWishlist,
+                child: detailController.productDetail.isWishlist == 1
+                    ? Image.asset(
+                        'assets/images/ic_wishlist_click.png',
+                        height: 25,
+                        width: 25,
+                      )
+                    : Image.asset(
+                        'assets/images/ic_wishlist.png',
+                        height: 25,
+                        width: 25,
+                      ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              AppText(
+                message: "Add to",
+                fontSize: 12,
+                color: AppColors.textColor2,
+              ),
+              AppText(
+                message: "Wishlist",
+                fontSize: 12,
+                color: AppColors.textColor2,
+              )
+            ],
+          );
+        }),
       ],
     );
   }
