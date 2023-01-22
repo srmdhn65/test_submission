@@ -28,7 +28,7 @@ class ProductListView extends GetView<ProductListController> {
                     crossAxisSpacing: 23,
                     mainAxisExtent: 250),
                 itemBuilder: (BuildContext context, int index) {
-                  return const LoadingCard();
+                  return LoadingCard();
                 })
             : RefreshIndicator(
                 onRefresh: () => controller.onRefresh,
